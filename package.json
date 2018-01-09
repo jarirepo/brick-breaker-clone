@@ -1,0 +1,22 @@
+{
+  "name": "brick-breaker-clone",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "parcel src/index.html -p 3000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jarirepo/brick-breaker-clone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jarirepo/brick-breaker-clone/issues"
+  },
+  "homepage": "https://github.com/jarirepo/brick-breaker-clone#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.4.1"
+  }
+}
