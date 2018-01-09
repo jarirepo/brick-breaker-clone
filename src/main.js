@@ -1,4 +1,5 @@
 import Brick from './brick'
+import Paddle from './paddle'
 
 const canvas = document.getElementById('game')
 const ctx = canvas.getContext('2d')
@@ -7,6 +8,8 @@ let bricks = []
 const gap = 2
 const cols = 5
 const rows = 3
+const paddleHeight = 35
+const paddleWidth = 140
 
 for (let i = 0; i < rows; i++) {
   for (let j = 0; j < cols; j++) {
@@ -18,6 +21,9 @@ for (let i = 0; i < rows; i++) {
   }
 }
 
+const paddle = new Paddle((canvas.width - paddleWidth) / 2, canvas.height - 2 * paddleHeight, paddleWidth, paddleHeight)
+
+
 function draw(time = 0) {
   ctx.fillStyle = '#000'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -25,6 +31,8 @@ function draw(time = 0) {
   for (let b of bricks) {
     b.show(ctx)
   }
+
+  paddle.show(ctx)
   
   requestAnimationFrame(draw)
 }
