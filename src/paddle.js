@@ -9,5 +9,5 @@ export default class Paddle {
   show(ctx) {
     ctx.fillStyle = '#ff0050'
     ctx.fillRect(this.left, this.top, this.width, this.height)
-  }
+  } 
 }
