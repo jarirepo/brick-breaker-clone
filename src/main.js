@@ -1,6 +1,7 @@
 import Brick from './brick'
 import Paddle from './paddle'
 import GameUpdater from './game-updater';
+import Ball from './ball';
 
 const canvas = document.getElementById('game')
 const ctx = canvas.getContext('2d')
@@ -26,6 +27,8 @@ for (let i = 0; i < rows; i++) {
 const paddle = new Paddle((canvas.width - paddleWidth) / 2, canvas.height - 2 * paddleHeight, paddleWidth, paddleHeight)
 
 const gameUpdater = new GameUpdater(timeStep, update)
+
+const ball = new Ball(canvas.width / 2, 0.75 * canvas.height, 20)
 
 
 document.addEventListener('keydown', e => {
@@ -63,6 +66,7 @@ function draw(time = 0) {
   for (let b of bricks) {
     b.show(ctx)
   }
+  ball.show(ctx)
   paddle.show(ctx)
   requestAnimationFrame(draw)
 }
