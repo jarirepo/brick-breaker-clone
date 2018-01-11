@@ -11,12 +11,12 @@ let bricks = []
 const gap = 2
 const cols = 5
 const rows = 3
-const paddleHeight = 35
+const paddleHeight = 30
 const paddleWidth = 140
 const paddleSpeed = 250
-const timeStep = 10 
+const timeStep = 20
 const ballRadius = 15
-const ballSpeed = 250
+const ballSpeed = 300
 
 for (let i = 0; i < rows; i++) {
   for (let j = 0; j < cols; j++) {
@@ -27,7 +27,6 @@ for (let i = 0; i < rows; i++) {
     bricks.push(new Brick(x, y, w, h))
   }
 }
-
 
 const gameUpdater = new GameUpdater(timeStep, update)
 const paddle = new Paddle((canvas.width - paddleWidth) / 2, canvas.height - 2 * paddleHeight, paddleWidth, paddleHeight)
@@ -70,13 +69,13 @@ function draw(time = 0) {
   gameUpdater.update(time)
 
   ctx.fillStyle = '#000'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   for (let b of bricks) {
     b.show(ctx)
   }
-  ball.show(ctx)
   paddle.show(ctx)
+  ball.show(ctx)
   requestAnimationFrame(draw)
 }
 draw()

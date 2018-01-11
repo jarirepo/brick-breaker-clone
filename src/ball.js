@@ -15,21 +15,26 @@ export default class Ball {
 
   show(ctx) {
     ctx.beginPath()
-    ctx.fillStyle = '#ffff00'
+    // ctx.fillStyle = '#ffff00'
+    const grad = ctx.createRadialGradient(
+      this.pos.x, this.pos.y - this.r / 4, 0,
+      this.pos.x, this.pos.y - this.r, 2 * this.r
+    )
+    grad.addColorStop(0, '#cccc00')
+    grad.addColorStop(1, '#000')
+    ctx.fillStyle = grad
     ctx.arc(this.pos.x, this.pos.y, this.r, 0, TWO_PI)
     ctx.fill()
   }
 
   checkBorders(canvas) {
-    if (this.pos.x - this.r <= 0) {
+    if (this.vel.x < 0 && this.pos.x - this.r <= 0) {
       this.vel.x *= -1
-    } else if (this.pos.x + this.r >= canvas.width - 1) {
-      console.log('right outside')
+    } else if (this.vel.x > 0 && this.pos.x + this.r >= canvas.width - 1) {
       this.vel.x *= -1
-    } else if (this.pos.y - this.r <= 0) {
+    } else if (this.vel.y < 0 && this.pos.y - this.r <= 0) {
       this.vel.y *= -1  
     } else if (this.vel.y > 0 && this.pos.y + this.r >= canvas.height - 1) {
-      console.log('bottom outside')
       this.vel.y *= -1  
     }
   }
