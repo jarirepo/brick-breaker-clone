@@ -3,6 +3,7 @@ import Paddle from './paddle'
 import GameUpdater from './game-updater';
 import Ball from './ball';
 
+const { cos, PI, random, sin } = Math
 const canvas = document.getElementById('game')
 const ctx = canvas.getContext('2d')
 
@@ -12,7 +13,10 @@ const cols = 5
 const rows = 3
 const paddleHeight = 35
 const paddleWidth = 140
+const paddleSpeed = 250
 const timeStep = 10 
+const ballRadius = 15
+const ballSpeed = 250
 
 for (let i = 0; i < rows; i++) {
   for (let j = 0; j < cols; j++) {
@@ -24,23 +28,22 @@ for (let i = 0; i < rows; i++) {
   }
 }
 
-const paddle = new Paddle((canvas.width - paddleWidth) / 2, canvas.height - 2 * paddleHeight, paddleWidth, paddleHeight)
 
 const gameUpdater = new GameUpdater(timeStep, update)
-
-const ball = new Ball(canvas.width / 2, 0.75 * canvas.height, 20)
+const paddle = new Paddle((canvas.width - paddleWidth) / 2, canvas.height - 2 * paddleHeight, paddleWidth, paddleHeight)
+const ball = new Ball(paddle.left + paddleWidth / 2, paddle.top - ballRadius, ballRadius)
 
 
 document.addEventListener('keydown', e => {
   switch (e.keyCode) {
     case 37: 
       if (paddle.left > 0) {
-        paddle.speed = -250       
+        paddle.speed = -paddleSpeed
       }
       break
     case 39: 
       if (paddle.left + paddle.width < canvas.width) {
-        paddle.speed = 250
+        paddle.speed = paddleSpeed
       }
       break
   }
@@ -48,6 +51,11 @@ document.addEventListener('keydown', e => {
 
 document.addEventListener('keyup', e => {
   switch (e.keyCode) {
+    case 13: 
+      const theta = -PI / 4 + random() * PI / 2 - PI / 2
+      ball.vel.x = ballSpeed * cos(theta)
+      ball.vel.y = ballSpeed * sin(theta)
+      break
     case 37: 
       paddle.speed = 0
       break
@@ -63,6 +71,7 @@ function draw(time = 0) {
 
   ctx.fillStyle = '#000'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
+
   for (let b of bricks) {
     b.show(ctx)
   }
@@ -73,6 +82,8 @@ function draw(time = 0) {
 draw()
 
 function update() {
+  ball.update(timeStep / 1000)
+  ball.checkBorders(canvas)
   paddle.update(timeStep / 1000)
   paddle.checkBorders(canvas)
 }
