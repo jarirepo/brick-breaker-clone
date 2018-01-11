@@ -7,6 +7,7 @@ export default class Paddle {
     this.width = width
     this.height = height
     this.speed = 0
+    this.count = 0
   }
 
   update(dt) {
@@ -25,11 +26,25 @@ export default class Paddle {
 
   show(ctx) {
     // ctx.fillStyle = '#ff0050'
+    
+    /*
     const grad = ctx.createLinearGradient(
       this.left, this.top,
       this.left, this.top + this.height - 1
     )
+    */
 
+    if (this.speed === 0) {
+      this.count = (this.count + 0.25 + this.height / 2) % (this.height / 2)
+    } else {
+      this.count = (this.count + 0.5 + this.height / 2) % (this.height / 2)      
+    }
+
+    const grad = ctx.createLinearGradient(
+      this.left, this.top + this.count,
+      this.left, this.top + this.height - 1 - this.count
+    )
+    
     grad.addColorStop(0, '#111')
     grad.addColorStop(0.5, '#ff0050')
     grad.addColorStop(1, '#111')

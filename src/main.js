@@ -30,19 +30,31 @@ for (let i = 0; i < rows; i++) {
 
 const gameUpdater = new GameUpdater(timeStep, update)
 const paddle = new Paddle((canvas.width - paddleWidth) / 2, canvas.height - 2 * paddleHeight, paddleWidth, paddleHeight)
-const ball = new Ball(paddle.left + paddleWidth / 2, paddle.top - ballRadius, ballRadius)
+const ball = new Ball(paddle.left + paddleWidth / 2, paddle.top - ballRadius, ballRadius, paddle)
 
+const GameState = {
+  IDLE: 0,
+  STARTED: 1,
+  PAUSED: 2,
+  GAMEOVER: 3
+}
+
+let state = GameState.IDLE
 
 document.addEventListener('keydown', e => {
   switch (e.keyCode) {
-    case 37: 
-      if (paddle.left > 0) {
-        paddle.speed = -paddleSpeed
+    case 37:
+      if (state === GameState.IDLE || state === GameState.STARTED) {
+        if (paddle.left > 0) {
+          paddle.speed = -paddleSpeed
+        }  
       }
       break
     case 39: 
-      if (paddle.left + paddle.width < canvas.width) {
-        paddle.speed = paddleSpeed
+      if (state === GameState.IDLE || state === GameState.STARTED) {
+        if (paddle.left + paddle.width < canvas.width) {
+          paddle.speed = paddleSpeed
+        }
       }
       break
   }
@@ -50,16 +62,17 @@ document.addEventListener('keydown', e => {
 
 document.addEventListener('keyup', e => {
   switch (e.keyCode) {
-    case 13: 
-      const theta = -PI / 4 + random() * PI / 2 - PI / 2
-      ball.vel.x = ballSpeed * cos(theta)
-      ball.vel.y = ballSpeed * sin(theta)
+    case 13:  // ENTER - start game
+      if (state === GameState.IDLE) {
+        state = GameState.STARTED
+        ball.release(ballSpeed)
+      }
       break
-    case 37: 
-      paddle.speed = 0
-      break
-    case 39: 
-      paddle.speed = 0
+    case 37:  // left arrow - move paddle to the left
+    case 39:  // right arrow - move paddle to the right
+      if (state === GameState.IDLE || state === GameState.STARTED) {
+        paddle.speed = 0
+      }
       break
   }
 })
@@ -81,9 +94,12 @@ function draw(time = 0) {
 draw()
 
 function update() {
-  ball.update(timeStep / 1000)
-  ball.checkBorders(canvas)
   paddle.update(timeStep / 1000)
   paddle.checkBorders(canvas)
+  ball.update(timeStep / 1000)
+  if (state !== GameState.STARTED) {
+    ball.reset()
+  }
+  ball.checkBorders(canvas)
 }
 
