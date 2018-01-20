@@ -79,10 +79,10 @@ export default class Ball {
         this.pos.x - this.r > paddle.left + paddle.width ||
         this.pos.y - this.r > paddle.top + paddle.height
     ) {
-      // no collision
-      return
+      return false
+    }
 
-    } else if (this.vel.y > 0 && this.pos.y + this.r > paddle.top) {
+    if (this.vel.y > 0 && this.pos.y + this.r > paddle.top) {
 
       if (this.pos.x > paddle.left + paddle.height / 2 &&
           this.pos.x < paddle.left + paddle.width - paddle.height / 2) {
@@ -94,44 +94,43 @@ export default class Ball {
         const theta = u * PI / 4 - PI / 2
         this.vel.x = this.speed * cos(theta)
         this.vel.y = this.speed * sin(theta)
+        return true
 
       } else {
 
-        if (this.pos.x < paddle.left + paddle.height / 2) {
+        const px1 = paddle.left + paddle.height / 2
+        const px2 = paddle.left + paddle.width - paddle.height / 2
+        const py = paddle.top + paddle.height / 2
+
+        if (this.pos.x < px1) {
           // check collision with the LEFT paddle arc
-          const dx = this.pos.x - ( paddle.left + paddle.height / 2)
-          const dy = this.pos.y - ( paddle.top + paddle.height / 2)
+          const dx = this.pos.x - px1
+          const dy = this.pos.y - py
           const a = sqrt(pow(dx, 2) + pow(dy, 2))  
-          if (a < this.r + paddle.height / 2) {
-            const cx = paddle.left + paddle.height / 2 + paddle.height / 2 * dx / a
-            const cy = paddle.top + paddle.height / 2 + paddle.height / 2 * dy / a
-            this.pos.x = cx
-            this.pos.y = cy
-            this.vel.x = this.speed * dx / a       
+          if (a < this.r + paddle.height / 2 + 0.5) {
+            this.pos.x = px1 + (paddle.height / 2 + this.r + 0.5) * dx / a
+            this.pos.y = py + (paddle.height / 2 + this.r + 0.5) * dy / a
+            this.vel.x = this.speed * dx / a
             this.vel.y = this.speed * dy / a      
             console.log('collision with LEFT arc')
-            return
+            return true
           }
-        } else if (this.pos.x > paddle.left + paddle.width - paddle.height / 2) {
+        } else if (this.pos.x > px2) {
           // check collision with the RIGHT paddle arc
-          const dx = this.pos.x - ( paddle.left + paddle.width - paddle.height / 2)
-          const dy = this.pos.y - ( paddle.top + paddle.height / 2)
-          const a = sqrt(pow(dx, 2) + pow(dy, 2))  
-          if (a < this.r + paddle.height / 2) {
-            const cx = paddle.left + paddle.width - paddle.height / 2 + paddle.height / 2 * dx / a
-            const cy = paddle.top + paddle.height / 2 + paddle.height / 2 * dy / a
-            this.pos.x = cx
-            this.pos.y = cy
+          const dx = this.pos.x - px2
+          const dy = this.pos.y - py
+          const a = sqrt(pow(dx, 2) + pow(dy, 2))
+          if (a < this.r + paddle.height / 2 + 0.5) {
+            this.pos.x = px2 + (paddle.height / 2 + this.r + 0.5) * dx / a
+            this.pos.y = py + (paddle.height / 2 + this.r + 0.5) * dy / a
             this.vel.x = this.speed * dx / a       
             this.vel.y = this.speed * dy / a       
             console.log('collision with RIGHT arc')
-            return
+            return true
           }
         }
-
-        // no side collision; assume ball hit the bottom
-        this.alive = false
       }
     }
+    return false
   }
 }

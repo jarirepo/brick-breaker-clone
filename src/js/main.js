@@ -13,13 +13,13 @@ const images = new Map()
 document.getElementById('heart')
 .addEventListener('load', e => images.set('heart', e.target))
 
-const gap = 2
-const cols = 5
+const gap = 1
+const cols = 6
 const rows = 3
-const paddleHeight = 25
 const paddleWidth = 160
+const paddleHeight = 25
 const paddleSpeed = 300
-const timeStep = 20
+const timeStep = 10
 const ballRadius = 15
 const ballSpeed = 300
 
@@ -42,12 +42,14 @@ const ball = new Ball(ballRadius)
 const GameState = {
   IDLE: 0,
   STARTED: 1,
-  PAUSED: 2,
-  GAMEOVER: 3
+  LEVELCOMPLETED: 2,
+  PAUSED: 3,
+  GAMEOVER: 4
 }
 
 let player = {
-  lives: 3
+  lives: 3,
+  level: 1
 }
 
 let state = GameState.IDLE
@@ -121,9 +123,12 @@ function draw(time = 0) {
 
   if (state === GameState.GAMEOVER) {
     gameOverText()
+  } else if (state === GameState.LEVELCOMPLETED) {
+    levelCompletedText()
   }
   requestAnimationFrame(draw)
 }
+
 draw()
 
 
@@ -140,6 +145,23 @@ function update() {
     ball.checkBorders(canvas)
     ball.checkPaddleCollision(paddle)
 
+    let collided = false
+    for (let brick of bricks) {
+      collided = brick.checkBallCollision(ball)
+      if (collided) { break }
+    }
+
+    let bricksCleared = 0
+    bricks.forEach(b => {
+      if (b.cleared) {
+        bricksCleared++
+      }
+    })
+    if (bricksCleared === bricks.length) {
+      state = GameState.LEVELCOMPLETED
+      console.log('Level Completed!')
+    }
+
     if (!ball.alive) {
       ball.reset(paddle)
       player.lives--
@@ -152,10 +174,21 @@ function update() {
 }
 
 function gameOverText() {
+  const text = `Game Over!`
   ctx.font = '32pt Trebuchet MS'
   ctx.textAlign = 'center'
   ctx.textBaseLine = 'middle'
-  const w = ctx.measureText('Game Over!')
+  const w = ctx.measureText(text)
   ctx.fillStyle = 'red'
-  ctx.fillText('Game Over!', canvas.width / 2, 2 / 3 * canvas.height)
+  ctx.fillText(text, canvas.width / 2, 2 / 3 * canvas.height)  
+}
+
+function levelCompletedText() {
+  const text = `Level ${player.level} completed`
+  ctx.font = '32pt Trebuchet MS'
+  ctx.textAlign = 'center'
+  ctx.textBaseLine = 'middle'
+  const w = ctx.measureText(text)
+  ctx.fillStyle = 'green'
+  ctx.fillText(text, canvas.width / 2, 2 / 3 * canvas.height)  
 }
