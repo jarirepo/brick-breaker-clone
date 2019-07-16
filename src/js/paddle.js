@@ -51,13 +51,22 @@ export default class Paddle {
 
     const r = this.height / 2
 
-    ctx.beginPath()
     ctx.fillStyle = grad
     ctx.strokeStyle = '#fff'
     ctx.lineWidth = 1
-    ctx.rect(this.left + r, this.top, this.width - 2 * r, this.height)
-    ctx.arc(this.left + r, this.top + r, r, PI / 2, 3 * PI / 2, false)
+
+    ctx.beginPath()
+    ctx.arc(this.left + r, this.top + r, r, -PI / 2, PI / 2, true)
+    ctx.fill()
+    ctx.stroke()
+    
+    ctx.beginPath()
     ctx.arc(this.left + this.width - r, this.top + r, r, -PI / 2, PI / 2, false)
+    ctx.fill()
+    ctx.stroke()
+
+    ctx.beginPath();
+    ctx.rect(this.left + r, this.top, this.width - 2 * r, this.height)
     ctx.fill()
     ctx.stroke()
   } 

@@ -1,6 +1,6 @@
 {
   "name": "brick-breaker-clone",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "scripts": {
     "start": "parcel src/index.html -p 3000",
@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/jarirepo/brick-breaker-clone#readme",
   "devDependencies": {
-    "parcel-bundler": "^1.4.1"
+    "parcel-bundler": "^1.12.3"
   }
 }
